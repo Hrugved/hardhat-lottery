@@ -57,6 +57,7 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
     i_callbackGasLimit = callbackGasLimit;
     s_raffleState = RaffleState.OPEN;
     i_interval = interval;
+    s_lastTimestamp = block.timestamp;
   }
 
   function enterRaffle() public payable {
@@ -68,18 +69,6 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
     }
     s_players.push(payable(msg.sender));
     emit RaffleEnter(msg.sender);
-  }
-
-  function requestRandomWinner() external {
-    s_raffleState = RaffleState.CALCULATING;
-    uint256 requestId = i_vrfCoordinator.requestRandomWords(
-      i_gasLane,
-      i_subscriptionId,
-      REQUEST_CONFIRMATIONS,
-      i_callbackGasLimit,
-      NUM_WORDS
-    );
-    emit RequestRaffleWinner(requestId);
   }
 
   function fulfillRandomWords(
@@ -116,6 +105,15 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
     if(!upkeepNeeded) {
       revert Raffle__UpkeepNotNeeded(address(this).balance,s_players.length,uint256(s_raffleState));
     }
+    s_raffleState = RaffleState.CALCULATING;
+    uint256 requestId = i_vrfCoordinator.requestRandomWords(
+      i_gasLane,
+      i_subscriptionId,
+      REQUEST_CONFIRMATIONS,
+      i_callbackGasLimit,
+      NUM_WORDS
+    );
+    emit RequestRaffleWinner(requestId);
   }
 
   /* view / pure functions */
@@ -149,6 +147,10 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
 
   function getRequestConfirmations() public pure returns (uint256) {
     return REQUEST_CONFIRMATIONS;
+  }
+
+  function getInterval() public view returns (uint256) {
+    return i_interval;
   }
 
 }

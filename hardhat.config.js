@@ -26,5 +26,12 @@ module.exports = {
       url: RPC_URL_RINKEBY,
       accounts: [PRIVATE_KEY],
     }
-  }
+  },
+  gasReporter: {
+    enabled: false,
+    noColors: true,
+    outputFile: 'gas-report.txt',
+    currency: "USD",
+    token: 'MATIC'
+  },
 }

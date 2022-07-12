@@ -3,3 +3,5 @@ artifacts
 cache
 deployments
 .env
+coverage
+coverage.json

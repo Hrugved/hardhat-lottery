@@ -113,6 +113,7 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
       i_callbackGasLimit,
       NUM_WORDS
     );
+    // this event is redundant as VRF internally also emits an event with requestId
     emit RequestRaffleWinner(requestId);
   }
 
@@ -141,7 +142,7 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
     return s_players.length;
   }
 
-  function getRequestTimestamp() public view returns (uint256) {
+  function getLastTimestamp() public view returns (uint256) {
     return s_lastTimestamp;
   }
 

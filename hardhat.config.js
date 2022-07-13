@@ -34,4 +34,7 @@ module.exports = {
     currency: "USD",
     token: 'MATIC'
   },
+  mocha: {
+    timeout: 300000
+  }
 }

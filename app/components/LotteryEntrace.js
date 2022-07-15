@@ -12,7 +12,11 @@ export default function LotteryEntrace() {
   const [numberOfPlayers, setNumberOfPlayers] = useState("0")
   const [recentWinner, setRecentWinner] = useState("")
 
-  const { runContractFunction: enterRaffle } = useWeb3Contract({
+  const {
+    runContractFunction: enterRaffle,
+    isLoading,
+    isFetching,
+  } = useWeb3Contract({
     abi: abi,
     contractAddress: raffleAddress,
     functionName: "enterRaffle",
@@ -73,22 +77,28 @@ export default function LotteryEntrace() {
   }
 
   return (
-    <div>
+    <div className="p-5">
       {raffleAddress ? (
         <div>
           <button
-            onClick={async () =>
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
+            onClick={async function () {
               await enterRaffle({
                 onSuccess: handleSuccess,
                 onError: (e) => console.log(e),
               })
-            }
+            }}
+            disabled={isLoading || isFetching}
           >
-            Enter Raffle
+            {isLoading || isFetching ? (
+              <div className="animate-spin spinner-border h-8 w-8 border-b-2 rounded-full"></div>
+            ) : (
+              <div>Enter Raffle</div>
+            )}
           </button>
-          Entrance Fee {ethers.utils.formatUnits(entranceFee, "ether")} ETH
-          Number Of Players {numberOfPlayers}
-          Recent Winner {recentWinner}
+          <div>Entrance Fee {ethers.utils.formatUnits(entranceFee, "ether")} ETH Number Of Players{" "}</div>
+          <div>{numberOfPlayers}</div>
+          <div>Recent Winner {recentWinner}</div>
         </div>
       ) : (
         <div>no Raffle address detected</div>
